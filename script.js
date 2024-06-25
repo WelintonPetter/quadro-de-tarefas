@@ -108,3 +108,34 @@ columns.forEach((column) => {
     column.addEventListener("dragleave", dragLeave);
     column.addEventListener("drop", drop);
 });
+const removeEmptyCards = () => {
+    document.querySelectorAll('.card').forEach(card => {
+        if (!card.textContent.trim()) {
+            card.remove();
+        }
+    });
+};
+
+window.addEventListener('beforeunload', removeEmptyCards);
+const saveBoard = () => {
+    const boardState = {};
+    columns.forEach((column, index) => {
+        boardState[`column${index}`] = column.innerHTML;
+    });
+    localStorage.setItem('kanbanBoard', JSON.stringify(boardState));
+};
+
+const loadBoard = () => {
+    const savedBoard = JSON.parse(localStorage.getItem('kanbanBoard'));
+    if (savedBoard) {
+        Object.keys(savedBoard).forEach(key => {
+            const column = document.querySelector(`.${key}`);
+            if (column) {
+                column.innerHTML = savedBoard[key];
+            }
+        });
+    }
+};
+
+window.addEventListener('DOMContentLoaded', loadBoard);
+window.addEventListener('beforeunload', saveBoard);

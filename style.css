@@ -132,3 +132,11 @@ form input, form textarea, form select {
 #addOrderButton:hover {
     background-color: #0056b3; /* Darker blue on hover */
 }
+.card[contenteditable="true"] {
+    box-shadow: 0 0 0 2px #2482ff;
+    border-color: #2482ff;
+}
+.column--highlight {
+    background-color: #deebff;
+    border: 2px dashed #2482ff;
+}
