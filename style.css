@@ -64,6 +64,28 @@ header > h1 {
     font-weight: 500;
     color: #4d5c76;
     margin-bottom: 5px;
+    position: relative;
+}
+
+.card__delete, .card__edit {
+    position: absolute;
+    top: 10px;
+    background: #ff4d4f;
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 0.75rem;
+    cursor: pointer;
+    padding: 2px 6px;
+}
+
+.card__delete {
+    right: 10px;
+}
+
+.card__edit {
+    right: 40px;
+    background: #4CAF50;
 }
 
 .column--highlight {
