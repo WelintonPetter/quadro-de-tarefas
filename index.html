@@ -10,31 +10,42 @@
 
     <main>
         <header>
-            <span>Projects / Manual do Dev</span>
             <h1>ORDENS</h1>
         </header>
+        
+        <div>
+            <button id="addOrderButton">Adicionar Ordem</button>
+                    <form id="orderForm" class="hidden">
+                        <label for="orderNumber">Número da Ordem</label>
+                        <input type="text" id="orderNumber" name="orderNumber" readonly>
 
+                        <label for="orderDescription">Descrição da Ordem</label>
+                        <textarea id="orderDescription" name="orderDescription" required></textarea>
+
+                        <label for="orderPriority">Criticidade</label>
+                        <select id="orderPriority" name="orderPriority" required>
+                            <option value="Baixo">Baixo</option>
+                            <option value="Medio">Médio</option>
+                            <option value="Alto">Alto</option>
+                            <option value="Critico">Crítico</option>
+                        </select>
+
+                        <button type="submit">Criar Ordem</button>
+                    </form>
+        </div>      
+
+        <div id="filterButtons">
+            <button id="filterLow">Baixo</button>
+            <button id="filterMedium">Médio</button>
+            <button id="filterHigh">Alto</button>
+            <button id="filterCritical">Crítico</button>
+            <button id="clearFilter">Limpar Filtro</button>
+        </div>
+          
         <section class="columns">
             <section class="column">
                 <h2 class="column__title">PARA FAZER</h2>
-                <button id="addOrderButton">Adicionar Ordem</button>
-                <form id="orderForm" class="hidden">
-                    <label for="orderNumber">Número da Ordem</label>
-                    <input type="text" id="orderNumber" name="orderNumber" readonly>
-
-                    <label for="orderDescription">Descrição da Ordem</label>
-                    <textarea id="orderDescription" name="orderDescription" required></textarea>
-
-                    <label for="orderPriority">Criticidade</label>
-                    <select id="orderPriority" name="orderPriority" required>
-                        <option value="Baixo">Baixo</option>
-                        <option value="Medio">Médio</option>
-                        <option value="Alto">Alto</option>
-                        <option value="Critico">Crítico</option>
-                    </select>
-
-                    <button type="submit">Criar Ordem</button>
-                </form>
+                
                 <section class="column__cards"></section>
             </section>
 

@@ -140,3 +140,26 @@ form input, form textarea, form select {
     background-color: #deebff;
     border: 2px dashed #2482ff;
 }
+.circle {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+    flex-shrink: 0; /* Evita que o círculo afete o tamanho do texto */
+}
+
+.low {
+    background-color: #34d399; /* Verde para criticidade baixa */
+}
+
+.medium {
+    background-color: #60a5fa; /* Azul para criticidade média */
+}
+
+.high {
+    background-color: #fbbf24; /* Amarelo para criticidade alta */
+}
+
+.very-high {
+    background-color: #d946ef; /* Roxo para criticidade muito alta */
+}

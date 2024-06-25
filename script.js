@@ -30,6 +30,7 @@ const drop = ({ target }) => {
     }
 };
 
+
 const createCard = (order) => {
     const card = document.createElement("section");
     card.className = "card";
@@ -42,6 +43,7 @@ const createCard = (order) => {
         ${order.description}<br>
         <em>Criticidade: ${order.priority}</em>
     `;
+    
 
     const deleteButton = document.createElement("button");
     deleteButton.className = "card__delete";
@@ -117,25 +119,79 @@ const removeEmptyCards = () => {
 };
 
 window.addEventListener('beforeunload', removeEmptyCards);
-const saveBoard = () => {
-    const boardState = {};
-    columns.forEach((column, index) => {
-        boardState[`column${index}`] = column.innerHTML;
+
+const editPriority = () => {
+    const priorities = ['Baixo', 'Médio', 'Alto', 'Crítico'];
+    const prioritySelect = document.createElement('select');
+    priorities.forEach(priority => {
+        const option = document.createElement('option');
+        option.value = priority;
+        option.textContent = priority;
+        prioritySelect.appendChild(option);
     });
-    localStorage.setItem('kanbanBoard', JSON.stringify(boardState));
+    prioritySelect.value = order.priority;
+    cardContent.insertBefore(prioritySelect, editButton);
+    editButton.style.display = 'none';
+
+    prioritySelect.addEventListener('change', () => {
+        order.priority = prioritySelect.value;
+        cardContent.removeChild(prioritySelect);
+        editButton.style.display = 'inline';
+        updateCardContent();
+    });
 };
 
-const loadBoard = () => {
-    const savedBoard = JSON.parse(localStorage.getItem('kanbanBoard'));
-    if (savedBoard) {
-        Object.keys(savedBoard).forEach(key => {
-            const column = document.querySelector(`.${key}`);
-            if (column) {
-                column.innerHTML = savedBoard[key];
-            }
-        });
-    }
+const updateCardContent = () => {
+    cardContent.innerHTML = `
+        <strong>Ordem #${order.number}</strong><br>
+        ${order.description}<br>
+        <em>Criticidade: ${order.priority}</em>
+    `;
+};
+const searchOrders = () => {
+    const searchInput = document.getElementById('searchInput').value.trim().toLowerCase();
+    document.querySelectorAll('.card').forEach(card => {
+        const orderNumber = card.querySelector('strong').textContent.toLowerCase();
+        const description = card.querySelector('p').textContent.toLowerCase();
+        if (orderNumber.includes(searchInput) || description.includes(searchInput)) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
 };
 
-window.addEventListener('DOMContentLoaded', loadBoard);
-window.addEventListener('beforeunload', saveBoard);
+document.getElementById('searchButton').addEventListener('click', searchOrders);
+document.getElementById('searchInput').addEventListener('keyup', searchOrders);
+const filterByPriority = (priority) => {
+    document.querySelectorAll('.card').forEach(card => {
+        const cardPriority = card.querySelector('em').textContent.split(': ')[1];
+        if (cardPriority === priority) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+};
+
+document.getElementById('filterLow').addEventListener('click', () => filterByPriority('Baixo'));
+document.getElementById('filterMedium').addEventListener('click', () => filterByPriority('Medio'));
+document.getElementById('filterHigh').addEventListener('click', () => filterByPriority('Alto'));
+document.getElementById('filterCritical').addEventListener('click', () => filterByPriority('Critico'));
+
+document.getElementById('clearFilter').addEventListener('click', () => {
+    document.querySelectorAll('.card').forEach(card => {
+        card.style.display = '';
+    });
+});
+
+const updateOrderCount = () => {
+    document.querySelectorAll('.column').forEach(column => {
+        const count = column.querySelectorAll('.card').length;
+        const title = column.querySelector('.column__title').textContent;
+        column.querySelector('.column__title').textContent = `${title} (${count})`;
+    });
+};
+
+// Chamar a função para atualizar a contagem inicialmente e sempre que necessário
+updateOrderCount();
