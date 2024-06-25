@@ -37,6 +37,7 @@ header > h1 {
     background-color: #f4f5f7;
     height: 100dvh;
     border-radius: 8px;
+    padding: 10px;
 }
 
 .column__title {
@@ -91,4 +92,43 @@ header > h1 {
 .column--highlight {
     background-color: #deebff;
     border: 2px solid #2482ff;
+}
+
+.hidden {
+    display: none;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+form label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #4d5c76;
+}
+
+form input, form textarea, form select {
+    font-size: 0.9rem;
+    padding: 8px; /* Increased padding for better touch/click target */
+    border: 1px solid #dfe1e6;
+    border-radius: 5px;
+}
+
+#addOrderButton {
+    background-color: #007bff; /* Blue background color */
+    color: white;
+    border: none;
+    padding: 10px 20px; /* Larger padding for a bigger button */
+    font-size: 0.9rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#addOrderButton:hover {
+    background-color: #0056b3; /* Darker blue on hover */
 }

@@ -17,6 +17,24 @@
         <section class="columns">
             <section class="column">
                 <h2 class="column__title">PARA FAZER</h2>
+                <button id="addOrderButton">Adicionar Ordem</button>
+                <form id="orderForm" class="hidden">
+                    <label for="orderNumber">Número da Ordem</label>
+                    <input type="text" id="orderNumber" name="orderNumber" readonly>
+
+                    <label for="orderDescription">Descrição da Ordem</label>
+                    <textarea id="orderDescription" name="orderDescription" required></textarea>
+
+                    <label for="orderPriority">Criticidade</label>
+                    <select id="orderPriority" name="orderPriority" required>
+                        <option value="Baixo">Baixo</option>
+                        <option value="Medio">Médio</option>
+                        <option value="Alto">Alto</option>
+                        <option value="Critico">Crítico</option>
+                    </select>
+
+                    <button type="submit">Criar Ordem</button>
+                </form>
                 <section class="column__cards"></section>
             </section>
 

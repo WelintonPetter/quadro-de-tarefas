@@ -1,6 +1,7 @@
 const columns = document.querySelectorAll(".column__cards");
 
 let draggedCard;
+let orderNumber = 1; // Starting order number
 
 const dragStart = (event) => {
     draggedCard = event.target;
@@ -29,16 +30,18 @@ const drop = ({ target }) => {
     }
 };
 
-const createCard = ({ target }) => {
-    if (!target.classList.contains("column__cards")) return;
-
+const createCard = (order) => {
     const card = document.createElement("section");
     card.className = "card";
     card.draggable = "true";
 
     const cardContent = document.createElement("div");
     cardContent.className = "card__content";
-    cardContent.contentEditable = "true";
+    cardContent.innerHTML = `
+        <strong>Ordem #${order.number}</strong><br>
+        ${order.description}<br>
+        <em>Criticidade: ${order.priority}</em>
+    `;
 
     const deleteButton = document.createElement("button");
     deleteButton.className = "card__delete";
@@ -63,8 +66,7 @@ const createCard = ({ target }) => {
     card.append(deleteButton);
     card.append(editButton);
     card.append(cardContent);
-    target.append(card);
-    cardContent.focus();
+    document.querySelector(".column__cards").append(card);
 };
 
 const updateCardBackground = (card, column) => {
@@ -75,10 +77,34 @@ const updateCardBackground = (card, column) => {
     }
 };
 
+const showOrderForm = () => {
+    document.getElementById("orderNumber").value = orderNumber;
+    document.getElementById("orderForm").classList.remove("hidden");
+};
+
+const hideOrderForm = () => {
+    document.getElementById("orderForm").classList.add("hidden");
+};
+
+const handleOrderFormSubmit = (event) => {
+    event.preventDefault();
+    const order = {
+        number: orderNumber,
+        description: document.getElementById("orderDescription").value,
+        priority: document.getElementById("orderPriority").value,
+    };
+    createCard(order);
+    orderNumber++;
+    hideOrderForm();
+    document.getElementById("orderForm").reset();
+};
+
+document.getElementById("addOrderButton").addEventListener("click", showOrderForm);
+document.getElementById("orderForm").addEventListener("submit", handleOrderFormSubmit);
+
 columns.forEach((column) => {
     column.addEventListener("dragover", dragOver);
     column.addEventListener("dragenter", dragEnter);
     column.addEventListener("dragleave", dragLeave);
     column.addEventListener("drop", drop);
-    column.addEventListener("dblclick", createCard);
 });
