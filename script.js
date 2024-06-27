@@ -49,10 +49,14 @@ const createCard = (order) => {
     const card = document.createElement('section');
     card.className = 'card';
     card.draggable = true;
+    const circleColor = getCircleColor(order.priority);
     card.innerHTML = `
-        <strong>Ordem #${order.number}</strong><br>
-        <div>${order.description}</div><br>
-        <em>Criticidade: ${order.priority}</em>
+        <div class="circle" style="background-color: ${circleColor};"></div>
+        <div class="card-content">
+            <strong>Ordem #${order.number}</strong><br>
+            <div>${order.description}</div><br>
+            <em>Criticidade: ${order.priority}</em>
+        </div>
         <button class="card__delete">X</button>
         <button class="card__edit">Edit</button>
     `;
@@ -65,7 +69,7 @@ const createCard = (order) => {
 
     const editButton = card.querySelector('.card__edit');
     editButton.addEventListener('click', () => {
-        const content = card.querySelector('div');
+        const content = card.querySelector('.card-content');
         content.contentEditable = true;
         content.focus();
     });
@@ -74,6 +78,21 @@ const createCard = (order) => {
     card.addEventListener('dragend', dragEnd);
 
     return card;
+};
+
+const getCircleColor = (priority) => {
+    switch (priority) {
+        case 'Baixo':
+            return '#34d399'; // Verde para criticidade baixa
+        case 'Médio':
+            return '#60a5fa'; // Azul para criticidade média
+        case 'Alto':
+            return '#fbbf24'; // Amarelo para criticidade alta
+        case 'Crítico':
+            return '#d946ef'; // Roxo para criticidade crítica
+        default:
+            return '#ced4da'; // Cor padrão para qualquer outro caso
+    }
 };
 
 const updateCardBackground = (card, column) => {
