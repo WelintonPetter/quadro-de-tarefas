@@ -55,7 +55,7 @@ const createCard = (order) => {
 
     card.innerHTML = `
         <div class="circle" style="background-color: ${circleColor};"></div>
-        <strong>Ordem #${order.number}</strong><br>
+        <strong>Ordem #${order.number} - ${order.tipo}</strong><br>
         <div>${order.description}</div><br>
         <div>Manutentor: ${order.manutentor}</div><br>
         <div>Maquina: ${order.maquina}</div><br>
@@ -82,7 +82,7 @@ const createCard = (order) => {
     // Gerar QR Code
     const qrCodeDiv = card.querySelector('.qrcode');
     const qr = qrcode(0, 'H');
-    qr.addData(`Numero da Ordem: ${order.number}\nDescricao: ${order.description}\nMaquina: ${order.maquina}\nCriticidade: ${order.priority}\nManutentor: ${order.manutentor}`);
+    qr.addData(`Numero da Ordem: ${order.number}\nTipo: ${order.tipo}\nDescricao: ${order.description}\nMaquina: ${order.maquina}\nCriticidade: ${order.priority}\nManutentor: ${order.manutentor}`);
     qr.make();
     qrCodeDiv.innerHTML = qr.createImgTag();
 
@@ -144,6 +144,7 @@ orderForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const order = {
         number: orderNumber,
+        tipo: orderTipo.options[orderTipo.selectedIndex].text, // Seleciona o tipo de ordem de serviço
         description: orderDescription.value,
         priority: orderPriority.value,
         maquina: orderMaquina.options[orderMaquina.selectedIndex].text, // Correção para capturar o texto selecionado na dropdown de máquina

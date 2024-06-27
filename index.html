@@ -16,6 +16,13 @@
     <div>
         <button id="addOrderButton">Adicionar Ordem</button>
         <form id="orderForm" class="hidden">
+            <label for="orderTipo">Tipo De Ordem</label>
+            <select id="orderTipo" name="orderTipo" required>
+                <option value="Corretiva">CO</option>
+                <option value="CorretivaProgramada">CP</option>
+                <option value="Preventica">PR</option>
+                <option value="Preditiva">PD</option>
+            </select>
             <label for="orderDescription">Descrição da Ordem</label>
             <textarea id="orderDescription" name="orderDescription" required></textarea>
             
