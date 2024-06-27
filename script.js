@@ -77,10 +77,11 @@ const createCard = (order) => {
 };
 
 const updateCardBackground = (card, column) => {
-    if (column.closest('.column').querySelector('.column__title').innerText === 'FINALIZADO') {
-        card.style.backgroundColor = '#d4edda';
+    const columnId = column.id;
+    if (columnId === 'doneColumn') {
+        card.style.backgroundColor = '#d4edda'; // Verde para coluna FINALIZADO
     } else {
-        card.style.backgroundColor = '#fff';
+        card.style.backgroundColor = '#fff'; // Cor padrão para outras colunas
     }
 };
 
