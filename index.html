@@ -8,64 +8,65 @@
 </head>
 <body>
 
-    <main>
-        <header>
-            <h1>ORDENS</h1>
-        </header>
-        
-        <div>
-            <button id="addOrderButton">Adicionar Ordem</button>
-                    <form id="orderForm" class="hidden">
-                        <label for="orderNumber">Número da Ordem</label>
-                        <input type="text" id="orderNumber" name="orderNumber" readonly>
+<main>
+    <header>
+        <h1>ORDENS</h1>
+    </header>
 
-                        <label for="orderDescription">Descrição da Ordem</label>
-                        <textarea id="orderDescription" name="orderDescription" required></textarea>
+    <div>
+        <button id="addOrderButton">Adicionar Ordem</button>
+        <form id="orderForm" class="hidden">
+            <label for="orderDescription">Descrição da Ordem</label>
+            <textarea id="orderDescription" name="orderDescription" required></textarea>
 
-                        <label for="orderPriority">Criticidade</label>
-                        <select id="orderPriority" name="orderPriority" required>
-                            <option value="Baixo">Baixo</option>
-                            <option value="Medio">Médio</option>
-                            <option value="Alto">Alto</option>
-                            <option value="Critico">Crítico</option>
-                        </select>
+            <label for="orderPriority">Criticidade</label>
+            <select id="orderPriority" name="orderPriority" required>
+                <option value="Baixo">Baixo</option>
+                <option value="Médio">Médio</option>
+                <option value="Alto">Alto</option>
+                <option value="Crítico">Crítico</option>
+            </select>
 
-                        <button type="submit">Criar Ordem</button>
-                    </form>
-        </div>      
+            <button type="submit">Criar Ordem</button>
+        </form>
+    </div>
 
-        <div id="filterButtons">
-            <button id="filterLow">Baixo</button>
-            <button id="filterMedium">Médio</button>
-            <button id="filterHigh">Alto</button>
-            <button id="filterCritical">Crítico</button>
-            <button id="clearFilter">Limpar Filtro</button>
-        </div>
-          
-        <section class="columns">
-            <section class="column">
-                <h2 class="column__title">PARA FAZER</h2>
-                
-                <section class="column__cards"></section>
-            </section>
+    <div id="searchFilter">
+        <input type="text" id="searchInput" placeholder="Pesquisar...">
+        <button id="searchButton">Buscar</button>
+    </div>
 
-            <section class="column">
-                <h2 class="column__title">EM ANDAMENTO</h2>
-                <section class="column__cards"></section>
-            </section>
+    <div id="filterButtons">
+        <button id="filterLow">Baixo</button>
+        <button id="filterMedium">Médio</button>
+        <button id="filterHigh">Alto</button>
+        <button id="filterCritical">Crítico</button>
+        <button id="clearFilter">Limpar Filtro</button>
+    </div>
 
-            <section class="column">
-                <h2 class="column__title">PARA REVER</h2>
-                <section class="column__cards"></section>
-            </section>
-
-            <section class="column">
-                <h2 class="column__title">FINALIZADO</h2>
-                <section class="column__cards"></section>
-            </section>
+    <section class="columns">
+        <section class="column">
+            <h2 class="column__title" data-title="PARA FAZER">PARA FAZER (0)</h2>
+            <section class="column__cards" id="todoColumn"></section>
         </section>
-    </main>
 
-    <script src="script.js"></script>
+        <section class="column">
+            <h2 class="column__title" data-title="EM ANDAMENTO">EM ANDAMENTO (0)</h2>
+            <section class="column__cards" id="inProgressColumn"></section>
+        </section>
+
+        <section class="column">
+            <h2 class="column__title" data-title="PARA REVER">PARA REVER (0)</h2>
+            <section class="column__cards" id="reviewColumn"></section>
+        </section>
+
+        <section class="column">
+            <h2 class="column__title" data-title="FINALIZADO">FINALIZADO (0)</h2>
+            <section class="column__cards" id="doneColumn"></section>
+        </section>
+    </section>
+</main>
+
+<script src="script.js"></script>
 </body>
 </html>
