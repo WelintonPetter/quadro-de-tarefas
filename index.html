@@ -18,6 +18,14 @@
         <form id="orderForm" class="hidden">
             <label for="orderDescription">Descrição da Ordem</label>
             <textarea id="orderDescription" name="orderDescription" required></textarea>
+            
+            <label for="orderMaquina">Maquina</label>
+            <select id="orderMaquina" name="orderMaquina" required>
+                <option value="Maquina1">01</option>
+                <option value="Maquina2">02</option>
+                <option value="Maquina3">03</option>
+                <option value="Maquina4">04</option>
+            </select>
 
             <label for="orderPriority">Criticidade</label>
             <select id="orderPriority" name="orderPriority" required>
@@ -26,6 +34,14 @@
                 <option value="Alto">Alto</option>
                 <option value="Crítico">Crítico</option>
             </select>
+            <label for="orderManutentor">Manutentor</label>
+            <select id="orderManutentor" name="orderManutentor" required>
+                <option value="Manutentor1">Welinton</option>
+                <option value="Manutentor2">Welinton2</option>
+                <option value="Manutentor3">Welinton3</option>
+                <option value="Manutentor4">Welinton3</option>
+            </select>
+            
 
             <button type="submit">Criar Ordem</button>
         </form>
@@ -66,7 +82,7 @@
         </section>
     </section>
 </main>
-
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator/qrcode.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

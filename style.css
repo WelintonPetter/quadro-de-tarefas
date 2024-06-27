@@ -172,4 +172,20 @@ form input, form textarea, form select {
         margin-top: 20px;
     }
 }
+.card {
+    position: relative;
+    /* Estilos gerais para o card */
+    padding: 10px; /* Ajuste o padding conforme necessário */
+    border: 1px solid #ccc; /* Exemplo de borda para o card */
+    border-radius: 8px; /* Borda arredondada */
+}
 
+.qrcode {
+    position: absolute;
+    top: 50%; /* Posiciona o QR Code no centro vertical */
+    right: 32%; /* Posiciona o QR Code no canto direito */
+    transform: translateY(-50%); /* Centraliza verticalmente */
+    width: 20%; /* Ajusta a largura do QR Code */
+    height: auto; /* Altura automática proporcional */
+    max-width: 60px; /* Largura máxima do QR Code */
+}

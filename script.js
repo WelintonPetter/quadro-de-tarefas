@@ -1,3 +1,5 @@
+// Início do script
+
 const todoColumn = document.getElementById('todoColumn');
 const inProgressColumn = document.getElementById('inProgressColumn');
 const reviewColumn = document.getElementById('reviewColumn');
@@ -49,31 +51,42 @@ const createCard = (order) => {
     const card = document.createElement('section');
     card.className = 'card';
     card.draggable = true;
-    const circleColor = getCircleColor(order.priority);
+    const circleColor = getCircleColor(order.priority); // Função para obter a cor do círculo com base na criticidade
+
     card.innerHTML = `
         <div class="circle" style="background-color: ${circleColor};"></div>
-        <div class="card-content">
-            <strong>Ordem #${order.number}</strong><br>
-            <div>${order.description}</div><br>
-            <em>Criticidade: ${order.priority}</em>
-        </div>
+        <strong>Ordem #${order.number}</strong><br>
+        <div>${order.description}</div><br>
+        <div>Manutentor: ${order.manutentor}</div><br>
+        <div>Maquina: ${order.maquina}</div><br>
+        <div class="qrcode"></div>
         <button class="card__delete">X</button>
         <button class="card__edit">Edit</button>
     `;
 
+    // Botão de exclusão
     const deleteButton = card.querySelector('.card__delete');
     deleteButton.addEventListener('click', () => {
         card.remove();
         updateOrderCount();
     });
 
+    // Botão de edição
     const editButton = card.querySelector('.card__edit');
     editButton.addEventListener('click', () => {
-        const content = card.querySelector('.card-content');
+        const content = card.querySelector('div');
         content.contentEditable = true;
         content.focus();
     });
 
+    // Gerar QR Code
+    const qrCodeDiv = card.querySelector('.qrcode');
+    const qr = qrcode(0, 'H');
+    qr.addData(`Numero da Ordem: ${order.number}\nDescricao: ${order.description}\nMaquina: ${order.maquina}\nCriticidade: ${order.priority}\nManutentor: ${order.manutentor}`);
+    qr.make();
+    qrCodeDiv.innerHTML = qr.createImgTag();
+
+    // Evento de arrastar
     card.addEventListener('dragstart', dragStart);
     card.addEventListener('dragend', dragEnd);
 
@@ -132,7 +145,9 @@ orderForm.addEventListener('submit', (event) => {
     const order = {
         number: orderNumber,
         description: orderDescription.value,
-        priority: orderPriority.value
+        priority: orderPriority.value,
+        maquina: orderMaquina.options[orderMaquina.selectedIndex].text, // Correção para capturar o texto selecionado na dropdown de máquina
+        manutentor: orderManutentor.options[orderManutentor.selectedIndex].text // Seleciona o Manutentor da opção selecionada
     };
     const newCard = createCard(order);
     todoColumn.appendChild(newCard);
@@ -187,3 +202,5 @@ document.addEventListener('dragover', dragOver);
 document.addEventListener('dragenter', dragEnter);
 document.addEventListener('dragleave', dragLeave);
 document.addEventListener('drop', drop);
+
+// Fim do script
