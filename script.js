@@ -56,9 +56,10 @@ const createCard = (order) => {
     card.innerHTML = `
         <div class="circle" style="background-color: ${circleColor};"></div>
         <strong>Ordem #${order.number} - ${order.tipo}</strong><br>
-        <div>${order.description}</div><br>
-        <div>Manutentor: ${order.manutentor}</div><br>
-        <div>Maquina: ${order.maquina}</div><br>
+        <div class="card__description">${order.description}</div><br>
+        <div>Manutentor: <span class="card__manutentor">${order.manutentor}</span></div><br>
+        <em>Criticidade: ${order.priority}</em>
+        <div>Maquina: <span class="card__maquina">${order.maquina}</span></div><br>
         <div class="qrcode"></div>
         <button class="card__delete">X</button>
         <button class="card__edit">Edit</button>
@@ -74,9 +75,7 @@ const createCard = (order) => {
     // Botão de edição
     const editButton = card.querySelector('.card__edit');
     editButton.addEventListener('click', () => {
-        const content = card.querySelector('div');
-        content.contentEditable = true;
-        content.focus();
+        editCard(card, order);
     });
 
     // Gerar QR Code
@@ -194,6 +193,46 @@ const filterByPriority = (priority) => {
         } else {
             card.style.display = 'none';
         }
+    });
+};
+
+const editCard = (card, order) => {
+    const cardDescription = card.querySelector('.card__description');
+    const cardManutentor = card.querySelector('.card__manutentor');
+    const cardMaquina = card.querySelector('.card__maquina');
+
+    // Tornar os campos editáveis
+    cardDescription.contentEditable = true;
+    cardManutentor.contentEditable = true;
+    cardMaquina.contentEditable = true;
+
+    // Adicionar botão para salvar edições
+    const saveButton = document.createElement('button');
+    saveButton.textContent = 'Save';
+    saveButton.className = 'card__save';
+    card.appendChild(saveButton);
+
+    saveButton.addEventListener('click', () => {
+        // Atualizar os dados do pedido
+        order.description = cardDescription.textContent;
+        order.manutentor = cardManutentor.textContent;
+        order.maquina = cardMaquina.textContent;
+
+        // Regerar o QR Code
+        const qrCodeDiv = card.querySelector('.qrcode');
+        qrCodeDiv.innerHTML = '';
+        const qr = qrcode(0, 'H');
+        qr.addData(`Numero da Ordem: ${order.number}\nTipo: ${order.tipo}\nDescricao: ${order.description}\nMaquina: ${order.maquina}\nCriticidade: ${order.priority}\nManutentor: ${order.manutentor}`);
+        qr.make();
+        qrCodeDiv.innerHTML = qr.createImgTag();
+
+        // Reverter os campos para não editáveis
+        cardDescription.contentEditable = false;
+        cardManutentor.contentEditable = false;
+        cardMaquina.contentEditable = false;
+
+        // Remover botão de salvar
+        card.removeChild(saveButton);
     });
 };
 
