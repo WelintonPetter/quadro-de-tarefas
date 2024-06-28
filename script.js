@@ -44,6 +44,7 @@ const drop = (event) => {
         currentColumn.classList.remove('column--highlight');
         updateCardBackground(draggedCard, currentColumn);
         updateOrderCount();
+        saveToLocalStorage();
     }
 };
 
@@ -51,41 +52,37 @@ const createCard = (order) => {
     const card = document.createElement('section');
     card.className = 'card';
     card.draggable = true;
-    const circleColor = getCircleColor(order.priority); // Função para obter a cor do círculo com base na criticidade
+    const circleColor = getCircleColor(order.priority);
 
     card.innerHTML = `
         <div class="circle" style="background-color: ${circleColor};"></div>
         <strong>Ordem #${order.number} - ${order.tipo}</strong><br>
         <div class="card__description">${order.description}</div><br>
         <div>Manutentor: <span class="card__manutentor">${order.manutentor}</span></div><br>
-        <em>Criticidade: ${order.priority}</em>
         <div>Maquina: <span class="card__maquina">${order.maquina}</span></div><br>
         <div class="qrcode"></div>
         <button class="card__delete">X</button>
         <button class="card__edit">Edit</button>
     `;
 
-    // Botão de exclusão
     const deleteButton = card.querySelector('.card__delete');
     deleteButton.addEventListener('click', () => {
         card.remove();
         updateOrderCount();
+        saveToLocalStorage();
     });
 
-    // Botão de edição
     const editButton = card.querySelector('.card__edit');
     editButton.addEventListener('click', () => {
         editCard(card, order);
     });
 
-    // Gerar QR Code
     const qrCodeDiv = card.querySelector('.qrcode');
     const qr = qrcode(0, 'H');
     qr.addData(`Numero da Ordem: ${order.number}\nTipo: ${order.tipo}\nDescricao: ${order.description}\nMaquina: ${order.maquina}\nCriticidade: ${order.priority}\nManutentor: ${order.manutentor}`);
     qr.make();
     qrCodeDiv.innerHTML = qr.createImgTag();
 
-    // Evento de arrastar
     card.addEventListener('dragstart', dragStart);
     card.addEventListener('dragend', dragEnd);
 
@@ -95,24 +92,24 @@ const createCard = (order) => {
 const getCircleColor = (priority) => {
     switch (priority) {
         case 'Baixo':
-            return '#34d399'; // Verde para criticidade baixa
+            return '#34d399';
         case 'Médio':
-            return '#60a5fa'; // Azul para criticidade média
+            return '#60a5fa';
         case 'Alto':
-            return '#fbbf24'; // Amarelo para criticidade alta
+            return '#fbbf24';
         case 'Crítico':
-            return '#d946ef'; // Roxo para criticidade crítica
+            return '#d946ef';
         default:
-            return '#ced4da'; // Cor padrão para qualquer outro caso
+            return '#ced4da';
     }
 };
 
 const updateCardBackground = (card, column) => {
     const columnId = column.id;
     if (columnId === 'doneColumn') {
-        card.style.backgroundColor = '#d4edda'; // Verde para coluna FINALIZADO
+        card.style.backgroundColor = '#d4edda';
     } else {
-        card.style.backgroundColor = '#fff'; // Cor padrão para outras colunas
+        card.style.backgroundColor = '#fff';
     }
 };
 
@@ -123,7 +120,100 @@ const updateOrderCount = () => {
         const title = column.querySelector('.column__title');
         title.textContent = `${title.dataset.title} (${count})`;
     });
+
+    updateReportsAndStatistics(); // Atualiza os relatórios e estatísticas após contar as ordens
 };
+
+const saveToLocalStorage = () => {
+    const columns = ['todoColumn', 'inProgressColumn', 'reviewColumn', 'doneColumn'];
+    const orders = columns.map(columnId => {
+        const column = document.getElementById(columnId);
+        const cards = Array.from(column.querySelectorAll('.card')).map(card => ({
+            number: parseInt(card.querySelector('strong').textContent.split('#')[1].split(' - ')[0]),
+            tipo: card.querySelector('strong').textContent.split(' - ')[1],
+            description: card.querySelector('.card__description').textContent,
+            priority: getPriorityFromColor(card.querySelector('.circle').style.backgroundColor),
+            maquina: card.querySelector('.card__maquina').textContent,
+            manutentor: card.querySelector('.card__manutentor').textContent
+        }));
+        return { columnId, cards };
+    });
+    localStorage.setItem('orders', JSON.stringify(orders));
+};
+
+const loadFromLocalStorage = () => {
+    const orders = JSON.parse(localStorage.getItem('orders'));
+    if (orders) {
+        orders.forEach(({ columnId, cards }) => {
+            const column = document.getElementById(columnId);
+            cards.forEach(order => {
+                const newCard = createCard(order);
+                column.appendChild(newCard);
+            });
+        });
+        updateOrderCount();
+    }
+};
+
+const editCard = (card, order) => {
+    const description = card.querySelector('.card__description');
+    const manutentor = card.querySelector('.card__manutentor');
+    const maquina = card.querySelector('.card__maquina');
+
+    const saveButton = document.createElement('button');
+    saveButton.textContent = 'Save';
+    saveButton.classList.add('card__save');
+
+    card.appendChild(saveButton);
+
+    description.contentEditable = true;
+    manutentor.contentEditable = true;
+    maquina.contentEditable = true;
+
+    saveButton.addEventListener('click', () => {
+        description.contentEditable = false;
+        manutentor.contentEditable = false;
+        maquina.contentEditable = false;
+
+        order.description = description.textContent;
+        order.manutentor = manutentor.textContent;
+        order.maquina = maquina.textContent;
+
+        const qrCodeDiv = card.querySelector('.qrcode');
+        const qr = qrcode(0, 'H');
+        qr.addData(`Numero da Ordem: ${order.number}\nTipo: ${order.tipo}\nDescricao: ${order.description}\nMaquina: ${order.maquina}\nCriticidade: ${order.priority}\nManutentor: ${order.manutentor}`);
+        qr.make();
+        qrCodeDiv.innerHTML = qr.createImgTag();
+
+        saveButton.remove();
+        saveToLocalStorage();
+    });
+};
+
+const getPriorityFromColor = (color) => {
+    switch (color) {
+        case 'rgb(52, 211, 153)':
+            return 'Baixo';
+        case 'rgb(96, 165, 250)':
+            return 'Médio';
+        case 'rgb(251, 191, 36)':
+            return 'Alto';
+        case 'rgb(217, 70, 239)':
+            return 'Crítico';
+        default:
+            return 'Desconhecido';
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadFromLocalStorage();
+    updateReportsAndStatistics();
+});
+
+document.addEventListener('dragover', dragOver);
+document.addEventListener('dragenter', dragEnter);
+document.addEventListener('dragleave', dragLeave);
+document.addEventListener('drop', drop);
 
 const addOrderButton = document.getElementById('addOrderButton');
 const orderForm = document.getElementById('orderForm');
@@ -143,11 +233,11 @@ orderForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const order = {
         number: orderNumber,
-        tipo: orderTipo.options[orderTipo.selectedIndex].text, // Seleciona o tipo de ordem de serviço
+        tipo: orderTipo.options[orderTipo.selectedIndex].text,
         description: orderDescription.value,
         priority: orderPriority.value,
-        maquina: orderMaquina.options[orderMaquina.selectedIndex].text, // Correção para capturar o texto selecionado na dropdown de máquina
-        manutentor: orderManutentor.options[orderManutentor.selectedIndex].text // Seleciona o Manutentor da opção selecionada
+        maquina: orderMaquina.options[orderMaquina.selectedIndex].text,
+        manutentor: orderManutentor.options[orderManutentor.selectedIndex].text
     };
     const newCard = createCard(order);
     todoColumn.appendChild(newCard);
@@ -155,6 +245,7 @@ orderForm.addEventListener('submit', (event) => {
     orderForm.reset();
     orderForm.classList.add('hidden');
     updateOrderCount();
+    saveToLocalStorage();
 });
 
 searchButton.addEventListener('click', () => {
@@ -187,7 +278,7 @@ clearFilter.addEventListener('click', () => {
 const filterByPriority = (priority) => {
     const allCards = document.querySelectorAll('.card');
     allCards.forEach(card => {
-        const cardPriority = card.querySelector('em').textContent.split(': ')[1];
+        const cardPriority = getPriorityFromColor(card.querySelector('.circle').style.backgroundColor);
         if (cardPriority === priority) {
             card.style.display = 'block';
         } else {
@@ -196,51 +287,87 @@ const filterByPriority = (priority) => {
     });
 };
 
-const editCard = (card, order) => {
-    const cardDescription = card.querySelector('.card__description');
-    const cardManutentor = card.querySelector('.card__manutentor');
-    const cardMaquina = card.querySelector('.card__maquina');
+const updateReportsAndStatistics = () => {
+    renderStatusDistributionChart();
+    renderPriorityCounts();
+    // Adicione mais funções de relatórios conforme necessário
+};
 
-    // Tornar os campos editáveis
-    cardDescription.contentEditable = true;
-    cardManutentor.contentEditable = true;
-    cardMaquina.contentEditable = true;
+const renderPriorityCounts = () => {
+    const counts = countByPriority();
+    const priorityCountsContainer = document.getElementById('priorityCountsContainer');
+    priorityCountsContainer.innerHTML = '';
 
-    // Adicionar botão para salvar edições
-    const saveButton = document.createElement('button');
-    saveButton.textContent = 'Save';
-    saveButton.className = 'card__save';
-    card.appendChild(saveButton);
-
-    saveButton.addEventListener('click', () => {
-        // Atualizar os dados do pedido
-        order.description = cardDescription.textContent;
-        order.manutentor = cardManutentor.textContent;
-        order.maquina = cardMaquina.textContent;
-
-        // Regerar o QR Code
-        const qrCodeDiv = card.querySelector('.qrcode');
-        qrCodeDiv.innerHTML = '';
-        const qr = qrcode(0, 'H');
-        qr.addData(`Numero da Ordem: ${order.number}\nTipo: ${order.tipo}\nDescricao: ${order.description}\nMaquina: ${order.maquina}\nCriticidade: ${order.priority}\nManutentor: ${order.manutentor}`);
-        qr.make();
-        qrCodeDiv.innerHTML = qr.createImgTag();
-
-        // Reverter os campos para não editáveis
-        cardDescription.contentEditable = false;
-        cardManutentor.contentEditable = false;
-        cardMaquina.contentEditable = false;
-
-        // Remover botão de salvar
-        card.removeChild(saveButton);
+    Object.keys(counts).forEach(priority => {
+        const count = counts[priority];
+        const priorityItem = document.createElement('div');
+        priorityItem.textContent = `${priority}: ${count}`;
+        priorityCountsContainer.appendChild(priorityItem);
     });
 };
 
-document.addEventListener('DOMContentLoaded', updateOrderCount);
+const countByPriority = () => {
+    const counts = {
+        Baixo: 0,
+        Médio: 0,
+        Alto: 0,
+        Crítico: 0
+    };
 
-document.addEventListener('dragover', dragOver);
-document.addEventListener('dragenter', dragEnter);
-document.addEventListener('dragleave', dragLeave);
-document.addEventListener('drop', drop);
+    const allCards = document.querySelectorAll('.card');
+    allCards.forEach(card => {
+        const priority = getPriorityFromColor(card.querySelector('.circle').style.backgroundColor);
+        counts[priority]++;
+    });
+
+    return counts;
+};
+
+const renderStatusDistributionChart = () => {
+    const columns = document.querySelectorAll('.column');
+    const data = [];
+
+    columns.forEach(column => {
+        const count = column.querySelectorAll('.card').length;
+        data.push(count);
+    });
+
+    const ctx = document.getElementById('statusDistributionChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['A Fazer', 'Em Progresso', 'Revisão', 'Concluído'],
+            datasets: [{
+                label: 'Distribuição por Estado',
+                data: data,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(255, 206, 86, 0.5)',
+                    'rgba(75, 192, 192, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Distribuição de Tarefas por Estado'
+                }
+            }
+        }
+    });
+};
 
 // Fim do script
