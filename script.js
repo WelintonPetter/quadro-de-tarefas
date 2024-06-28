@@ -13,6 +13,7 @@ const dragStart = (event) => {
 
 const dragEnd = (event) => {
     event.target.classList.remove('dragging');
+    saveToLocalStorage(); // Salva após mover o card
 };
 
 const dragOver = (event) => {
@@ -44,7 +45,7 @@ const drop = (event) => {
         currentColumn.classList.remove('column--highlight');
         updateCardBackground(draggedCard, currentColumn);
         updateOrderCount();
-        saveToLocalStorage();
+        saveToLocalStorage(); // Salva após o drop
     }
 };
 
@@ -57,9 +58,9 @@ const createCard = (order) => {
     card.innerHTML = `
         <div class="circle" style="background-color: ${circleColor};"></div>
         <strong>Ordem #${order.number} - ${order.tipo}</strong><br>
-        <div class="card__description">${order.description}</div><br>
-        <div>Manutentor: <span class="card__manutentor">${order.manutentor}</span></div><br>
-        <div>Maquina: <span class="card__maquina">${order.maquina}</span></div><br>
+        <div class="card__description" contenteditable>${order.description}</div><br>
+        <div>Manutentor: <span class="card__manutentor" contenteditable>${order.manutentor}</span></div><br>
+        <div>Maquina: <span class="card__maquina" contenteditable>${order.maquina}</span></div><br>
         <div class="qrcode"></div>
         <button class="card__delete">X</button>
         <button class="card__edit">Edit</button>
@@ -69,7 +70,7 @@ const createCard = (order) => {
     deleteButton.addEventListener('click', () => {
         card.remove();
         updateOrderCount();
-        saveToLocalStorage();
+        saveToLocalStorage(); // Salva após a exclusão do card
     });
 
     const editButton = card.querySelector('.card__edit');
@@ -146,6 +147,7 @@ const loadFromLocalStorage = () => {
     if (orders) {
         orders.forEach(({ columnId, cards }) => {
             const column = document.getElementById(columnId);
+            column.innerHTML = ''; // Limpa a coluna antes de adicionar cards
             cards.forEach(order => {
                 const newCard = createCard(order);
                 column.appendChild(newCard);
@@ -160,15 +162,13 @@ const editCard = (card, order) => {
     const manutentor = card.querySelector('.card__manutentor');
     const maquina = card.querySelector('.card__maquina');
 
-    const saveButton = document.createElement('button');
-    saveButton.textContent = 'Save';
-    saveButton.classList.add('card__save');
-
-    card.appendChild(saveButton);
-
     description.contentEditable = true;
     manutentor.contentEditable = true;
     maquina.contentEditable = true;
+
+    const saveButton = document.createElement('button');
+    saveButton.textContent = 'Save';
+    saveButton.classList.add('card__save');
 
     saveButton.addEventListener('click', () => {
         description.contentEditable = false;
@@ -186,8 +186,10 @@ const editCard = (card, order) => {
         qrCodeDiv.innerHTML = qr.createImgTag();
 
         saveButton.remove();
-        saveToLocalStorage();
+        saveToLocalStorage(); // Salva após a edição do card
     });
+
+    card.appendChild(saveButton);
 };
 
 const getPriorityFromColor = (color) => {
@@ -245,129 +247,41 @@ orderForm.addEventListener('submit', (event) => {
     orderForm.reset();
     orderForm.classList.add('hidden');
     updateOrderCount();
-    saveToLocalStorage();
+    saveToLocalStorage(); // Salva após adicionar nova ordem
 });
 
 searchButton.addEventListener('click', () => {
-    const searchText = searchInput.value.toLowerCase().trim();
-    if (!searchText) return;
-
-    const allCards = document.querySelectorAll('.card');
-    allCards.forEach(card => {
-        const cardText = card.textContent.toLowerCase();
-        if (cardText.includes(searchText)) {
-            card.style.display = 'block';
+    const searchTerm = searchInput.value.toLowerCase();
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        const description = card.querySelector('.card__description').textContent.toLowerCase();
+        if (description.includes(searchTerm)) {
+            card.style.display = '';
         } else {
             card.style.display = 'none';
         }
     });
 });
 
-filterLow.addEventListener('click', () => filterByPriority('Baixo'));
-filterMedium.addEventListener('click', () => filterByPriority('Médio'));
-filterHigh.addEventListener('click', () => filterByPriority('Alto'));
-filterCritical.addEventListener('click', () => filterByPriority('Crítico'));
-
-clearFilter.addEventListener('click', () => {
-    const allCards = document.querySelectorAll('.card');
-    allCards.forEach(card => {
-        card.style.display = 'block';
-    });
-});
-
-const filterByPriority = (priority) => {
-    const allCards = document.querySelectorAll('.card');
-    allCards.forEach(card => {
+const filterCardsByPriority = (priority) => {
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
         const cardPriority = getPriorityFromColor(card.querySelector('.circle').style.backgroundColor);
         if (cardPriority === priority) {
-            card.style.display = 'block';
+            card.style.display = '';
         } else {
             card.style.display = 'none';
         }
     });
 };
 
-const updateReportsAndStatistics = () => {
-    renderStatusDistributionChart();
-    renderPriorityCounts();
-    // Adicione mais funções de relatórios conforme necessário
-};
-
-const renderPriorityCounts = () => {
-    const counts = countByPriority();
-    const priorityCountsContainer = document.getElementById('priorityCountsContainer');
-    priorityCountsContainer.innerHTML = '';
-
-    Object.keys(counts).forEach(priority => {
-        const count = counts[priority];
-        const priorityItem = document.createElement('div');
-        priorityItem.textContent = `${priority}: ${count}`;
-        priorityCountsContainer.appendChild(priorityItem);
+filterLow.addEventListener('click', () => filterCardsByPriority('Baixo'));
+filterMedium.addEventListener('click', () => filterCardsByPriority('Médio'));
+filterHigh.addEventListener('click', () => filterCardsByPriority('Alto'));
+filterCritical.addEventListener('click', () => filterCardsByPriority('Crítico'));
+clearFilter.addEventListener('click', () => {
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.style.display = '';
     });
-};
-
-const countByPriority = () => {
-    const counts = {
-        Baixo: 0,
-        Médio: 0,
-        Alto: 0,
-        Crítico: 0
-    };
-
-    const allCards = document.querySelectorAll('.card');
-    allCards.forEach(card => {
-        const priority = getPriorityFromColor(card.querySelector('.circle').style.backgroundColor);
-        counts[priority]++;
-    });
-
-    return counts;
-};
-
-const renderStatusDistributionChart = () => {
-    const columns = document.querySelectorAll('.column');
-    const data = [];
-
-    columns.forEach(column => {
-        const count = column.querySelectorAll('.card').length;
-        data.push(count);
-    });
-
-    const ctx = document.getElementById('statusDistributionChart').getContext('2d');
-    const myChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: ['A Fazer', 'Em Progresso', 'Revisão', 'Concluído'],
-            datasets: [{
-                label: 'Distribuição por Estado',
-                data: data,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.5)',
-                    'rgba(54, 162, 235, 0.5)',
-                    'rgba(255, 206, 86, 0.5)',
-                    'rgba(75, 192, 192, 0.5)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Distribuição de Tarefas por Estado'
-                }
-            }
-        }
-    });
-};
-
-// Fim do script
+});
