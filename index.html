@@ -12,9 +12,6 @@
     <header>
         <h1>ORDENS</h1>
     </header>
-    </header>
-
-    
 
     <div>
         <button id="addOrderButton">Adicionar Ordem</button>
@@ -23,7 +20,7 @@
             <select id="orderTipo" name="orderTipo" required>
                 <option value="Corretiva">CO</option>
                 <option value="CorretivaProgramada">CP</option>
-                <option value="Preventica">PR</option>
+                <option value="Preventiva">PR</option>
                 <option value="Preditiva">PD</option>
             </select>
             <label for="orderDescription">Descrição da Ordem</label>
@@ -49,10 +46,8 @@
                 <option value="Manutentor1">Welinton</option>
                 <option value="Manutentor2">Welinton2</option>
                 <option value="Manutentor3">Welinton3</option>
-                <option value="Manutentor4">Welinton3</option>
+                <option value="Manutentor4">Welinton4</option>
             </select>
-            
-
             <button type="submit">Criar Ordem</button>
         </form>
     </div>
@@ -95,11 +90,9 @@
         <h2 class="column__title" data-title="GRÁFICO DE TIPOS DE ORDEM">GRÁFICO DE TIPOS DE ORDEM</h2>
         <canvas id="orderTypeChart"></canvas>
     </section>
-    
 </main>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator/qrcode.js"></script>
-
 <script src="script.js"></script>
 </body>
 </html>

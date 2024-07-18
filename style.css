@@ -12,13 +12,6 @@ main {
     user-select: none;
 }
 
-header > span {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #6b778c;
-    letter-spacing: 0.02rem;
-}
-
 header > h1 {
     color: #182b4d;
     font-size: 2rem;
@@ -103,103 +96,10 @@ form {
     flex-direction: column;
     gap: 10px;
     margin-bottom: 20px;
-}
-
-form label {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #4d5c76;
-}
-
-form input, form textarea, form select {
-    font-size: 0.9rem;
-    padding: 8px; /* Increased padding for better touch/click target */
-    border: 1px solid #dfe1e6;
-    border-radius: 5px;
-}
-
-#addOrderButton {
-    width: 100%; /* Botão de largura total */
-    background-color: #007bff; /* Cor de fundo azul */
-    color: #ffffff; /* Cor do texto branco */
-    border: none;
-    padding: 12px;
-    font-size: 1rem; /* Tamanho da fonte */
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 10px; /* Espaçamento superior */
-}
-
-#addOrderButton:hover {
-    background-color: #0056b3; /* Cor mais escura ao passar o mouse */
-}
-.card[contenteditable="true"] {
-    box-shadow: 0 0 0 2px #2482ff;
-    border-color: #2482ff;
-}
-.column--highlight {
-    background-color: #deebff;
-    border: 2px dashed #2482ff;
-}
-.circle {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin-right: 8px;
-    flex-shrink: 0; /* Evita que o círculo afete o tamanho do texto */
-}
-
-.low {
-    background-color: #34d399; /* Verde para criticidade baixa */
-}
-
-.medium {
-    background-color: #60a5fa; /* Azul para criticidade média */
-}
-
-.high {
-    background-color: #fbbf24; /* Amarelo para criticidade alta */
-}
-
-.very-high {
-    background-color: #d946ef; /* Roxo para criticidade muito alta */
-}
-@media screen and (max-width: 768px) {
-    .columns {
-        flex-direction: column;
-    }
-    .column {
-        width: 100%;
-        margin-top: 20px;
-    }
-}
-.card {
-    position: relative;
-    /* Estilos gerais para o card */
-    padding: 10px; /* Ajuste o padding conforme necessário */
-    border: 1px solid #ccc; /* Exemplo de borda para o card */
-    border-radius: 8px; /* Borda arredondada */
-}
-
-.qrcode {
-    position: absolute;
-    top: 50%; /* Posiciona o QR Code no centro vertical */
-    right: 32%; /* Posiciona o QR Code no canto direito */
-    transform: translateY(-50%); /* Centraliza verticalmente */
-    width: 20%; /* Ajusta a largura do QR Code */
-    height: auto; /* Altura automática proporcional */
-    max-width: 60px; /* Largura máxima do QR Code */
-}
-/* Estilos para o formulário de criar ordem */
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    padding: 20px;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    padding: 20px;
 }
 
 form label {
@@ -237,83 +137,6 @@ form button[type="submit"]:hover {
     background-color: #0056b3;
 }
 
-/* Estilos adicionais para os selects */
-form select {
-    appearance: none; /* Remove o estilo padrão do select */
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 10 5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 0l5 5H0z' fill='%23ced4da'/%3E%3C/svg%3E"); /* Ícone da seta para baixo */
-    background-repeat: no-repeat;
-    background-position: right 12px center; /* Posicionamento do ícone */
-    padding-right: 32px; /* Espaço para o ícone */
-}
-
-/* Estilos para o botão de criar ordem */
-#addOrderButton {
-    background-color: #28a745; /* Cor de fundo verde */
-    color: #ffffff;
-    border: none;
-    padding: 12px 24px;
-    font-size: 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#addOrderButton:hover {
-    background-color: #218838; /* Cor de fundo mais escura ao passar o mouse */
-}
-/* Estilos para o formulário de criar ordem */
-form {
-    max-width: 400px; /* Largura máxima do formulário */
-    margin: 0 auto; /* Centraliza o formulário na página */
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-form label {
-    font-size: 0.9rem; /* Tamanho da fonte dos labels reduzido */
-    color: #495057;
-    margin-bottom: 6px;
-    display: block; /* Garante que os labels fiquem em uma linha */
-}
-
-form input[type="text"],
-form textarea,
-form select {
-    width: calc(100% - 24px); /* Largura ajustada para os campos */
-    font-size: 0.9rem;
-    padding: 10px;
-    margin-bottom: 12px;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    background-color: #f8f9fa;
-    transition: border-color 0.3s ease;
-}
-
-form input:focus,
-form textarea:focus,
-form select:focus {
-    outline: none;
-    border-color: #80bdff;
-}
-
-form button[type="submit"] {
-    width: 100%; /* Botão de largura total */
-    background-color: #007bff;
-    color: #ffffff;
-    border: none;
-    padding: 12px;
-    font-size: 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-form button[type="submit"]:hover {
-    background-color: #0056b3;
-}
-
 #addOrderButton {
     width: 100%; /* Botão de largura total */
     background-color: #28a745;
@@ -324,63 +147,71 @@ form button[type="submit"]:hover {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin-top: 10px; /* Espaçamento superior */
 }
 
 #addOrderButton:hover {
-    background-color: #218838;
-}
-#searchInput,
-#searchButton,
-#filterLow,
-#filterMedium,
-#filterHigh,
-#filterCritical,
-#clearFilter {
-    padding: 10px; /* Padding para maior área clicável */
-    font-size: 0.9rem; /* Tamanho da fonte */
-    border: 1px solid #007bff; /* Borda azul */
-    border-radius: 5px; /* Borda arredondada */
-    margin-top: 10px; /* Espaçamento superior */
-    transition: border-color 0.3s ease, color 0.3s ease; /* Transições suaves */
+    background-color: #218838; /* Cor de fundo mais escura ao passar o mouse */
 }
 
-#searchInput {
-    flex: 1; /* Expande para preencher o espaço restante */
-    margin-right: 10px; /* Margem à direita para o botão */
-}
-
-#searchButton,
-#filterLow,
-#filterMedium,
-#filterHigh,
-#filterCritical,
-#clearFilter {
-    background-color: #007bff; /* Cor de fundo azul */
-    color: #ffffff; /* Cor do texto branco */
-    border: none; /* Sem borda */
-    cursor: pointer; /* Cursor de apontar */
-    padding: 12px; /* Padding para maior área clicável */
-    font-size: 0.9rem; /* Tamanho da fonte */
-    border-radius: 5px; /* Borda arredondada */
-    transition: background-color 0.3s ease, color 0.3s ease; /* Transições suaves */
-    margin-top: 10px; /* Espaçamento superior */
-}
-
-#searchButton:hover,
-#filterLow:hover,
-#filterMedium:hover,
-#filterHigh:hover,
-#filterCritical:hover,
-#clearFilter:hover {
-    background-color: #0056b3; /* Cor mais escura ao passar o mouse */
-}
-
-#searchButton {
-    width: auto; /* Largura automática */
+.card[contenteditable="true"] {
+    box-shadow: 0 0 0 2px #4caf50;
 }
 
 #searchFilter {
-    display: flex; /* Flex container para alinhamento */
-    align-items: center; /* Alinha itens verticalmente */
-    margin-bottom: 10px; /* Espaçamento inferior */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#searchFilter input[type="text"] {
+    width: 80%;
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}
+
+#searchFilter button {
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+#searchFilter button:hover {
+    background-color: #0056b3;
+}
+
+#filterButtons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#filterButtons button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #6c757d;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+#filterButtons button:hover {
+    background-color: #5a6268;
+}
+
+button.active {
+    background-color: #007bff !important;
+}
+
+button.active:hover {
+    background-color: #0056b3 !important;
 }
