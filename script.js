@@ -1,5 +1,3 @@
-// Início do script
-
 const todoColumn = document.getElementById('todoColumn');
 const inProgressColumn = document.getElementById('inProgressColumn');
 const reviewColumn = document.getElementById('reviewColumn');
@@ -14,6 +12,7 @@ const dragStart = (event) => {
 const dragEnd = (event) => {
     event.target.classList.remove('dragging');
     saveToLocalStorage(); // Salva após mover o card
+    updateOrderTypeChart(); // Atualiza o gráfico após mover o card
 };
 
 const dragOver = (event) => {
@@ -46,6 +45,7 @@ const drop = (event) => {
         updateCardBackground(draggedCard, currentColumn);
         updateOrderCount();
         saveToLocalStorage(); // Salva após o drop
+        updateOrderTypeChart(); // Atualiza o gráfico após o drop
     }
 };
 
@@ -71,6 +71,7 @@ const createCard = (order) => {
         card.remove();
         updateOrderCount();
         saveToLocalStorage(); // Salva após a exclusão do card
+        updateOrderTypeChart(); // Atualiza o gráfico após a exclusão do card
     });
 
     const editButton = card.querySelector('.card__edit');
@@ -117,171 +118,197 @@ const updateCardBackground = (card, column) => {
 const updateOrderCount = () => {
     const columns = document.querySelectorAll('.column');
     columns.forEach(column => {
-        const count = column.querySelectorAll('.card').length;
         const title = column.querySelector('.column__title');
-        title.textContent = `${title.dataset.title} (${count})`;
+        const cards = column.querySelectorAll('.card');
+        title.textContent = `${title.getAttribute('data-title')} (${cards.length})`;
     });
+};
 
-    updateReportsAndStatistics(); // Atualiza os relatórios e estatísticas após contar as ordens
+const addOrder = (order) => {
+    const card = createCard(order);
+    todoColumn.appendChild(card);
+    updateOrderCount();
+    saveToLocalStorage(); // Salva após a adição de nova ordem
+    updateOrderTypeChart(); // Atualiza o gráfico após a adição de nova ordem
+};
+
+document.getElementById('addOrderButton').addEventListener('click', () => {
+    document.getElementById('orderForm').classList.toggle('hidden');
+});
+
+document.getElementById('orderForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const order = {
+        number: orderNumber++,
+        tipo: formData.get('orderTipo'),
+        description: formData.get('orderDescription'),
+        maquina: formData.get('orderMaquina'),
+        priority: formData.get('orderPriority'),
+        manutentor: formData.get('orderManutentor'),
+    };
+    addOrder(order);
+    event.target.reset();
+    document.getElementById('orderForm').classList.add('hidden');
+});
+
+const editCard = (card, order) => {
+    const newDescription = prompt('Edit Description:', order.description);
+    if (newDescription !== null) {
+        card.querySelector('.card__description').textContent = newDescription;
+        order.description = newDescription;
+        saveToLocalStorage();
+    }
+    const newManutentor = prompt('Edit Manutentor:', order.manutentor);
+    if (newManutentor !== null) {
+        card.querySelector('.card__manutentor').textContent = newManutentor;
+        order.manutentor = newManutentor;
+        saveToLocalStorage();
+    }
+    const newMaquina = prompt('Edit Maquina:', order.maquina);
+    if (newMaquina !== null) {
+        card.querySelector('.card__maquina').textContent = newMaquina;
+        order.maquina = newMaquina;
+        saveToLocalStorage();
+    }
 };
 
 const saveToLocalStorage = () => {
-    const columns = ['todoColumn', 'inProgressColumn', 'reviewColumn', 'doneColumn'];
-    const orders = columns.map(columnId => {
-        const column = document.getElementById(columnId);
-        const cards = Array.from(column.querySelectorAll('.card')).map(card => ({
-            number: parseInt(card.querySelector('strong').textContent.split('#')[1].split(' - ')[0]),
-            tipo: card.querySelector('strong').textContent.split(' - ')[1],
-            description: card.querySelector('.card__description').textContent,
-            priority: getPriorityFromColor(card.querySelector('.circle').style.backgroundColor),
-            maquina: card.querySelector('.card__maquina').textContent,
-            manutentor: card.querySelector('.card__manutentor').textContent
-        }));
-        return { columnId, cards };
+    const columns = document.querySelectorAll('.column__cards');
+    const orders = {};
+
+    columns.forEach(column => {
+        const columnId = column.id;
+        orders[columnId] = [];
+        const cards = column.querySelectorAll('.card');
+        cards.forEach(card => {
+            const order = {
+                number: card.querySelector('strong').textContent.split('#')[1].split(' - ')[0],
+                tipo: card.querySelector('strong').textContent.split('- ')[1],
+                description: card.querySelector('.card__description').textContent,
+                maquina: card.querySelector('.card__maquina').textContent,
+                priority: card.querySelector('.circle').style.backgroundColor,
+                manutentor: card.querySelector('.card__manutentor').textContent,
+            };
+            orders[columnId].push(order);
+        });
     });
+
     localStorage.setItem('orders', JSON.stringify(orders));
 };
 
 const loadFromLocalStorage = () => {
     const orders = JSON.parse(localStorage.getItem('orders'));
     if (orders) {
-        orders.forEach(({ columnId, cards }) => {
-            const column = document.getElementById(columnId);
-            column.innerHTML = ''; // Limpa a coluna antes de adicionar cards
-            cards.forEach(order => {
-                const newCard = createCard(order);
-                column.appendChild(newCard);
+        Object.keys(orders).forEach(columnId => {
+            orders[columnId].forEach(order => {
+                const card = createCard(order);
+                document.getElementById(columnId).appendChild(card);
             });
         });
         updateOrderCount();
     }
 };
 
-const editCard = (card, order) => {
-    const description = card.querySelector('.card__description');
-    const manutentor = card.querySelector('.card__manutentor');
-    const maquina = card.querySelector('.card__maquina');
+const columns = document.querySelectorAll('.column__cards');
+columns.forEach(column => {
+    column.addEventListener('dragover', dragOver);
+    column.addEventListener('dragenter', dragEnter);
+    column.addEventListener('dragleave', dragLeave);
+    column.addEventListener('drop', drop);
+});
 
-    description.contentEditable = true;
-    manutentor.contentEditable = true;
-    maquina.contentEditable = true;
+loadFromLocalStorage();
 
-    const saveButton = document.createElement('button');
-    saveButton.textContent = 'Save';
-    saveButton.classList.add('card__save');
-
-    saveButton.addEventListener('click', () => {
-        description.contentEditable = false;
-        manutentor.contentEditable = false;
-        maquina.contentEditable = false;
-
-        order.description = description.textContent;
-        order.manutentor = manutentor.textContent;
-        order.maquina = maquina.textContent;
-
-        const qrCodeDiv = card.querySelector('.qrcode');
-        const qr = qrcode(0, 'H');
-        qr.addData(`Numero da Ordem: ${order.number}\nTipo: ${order.tipo}\nDescricao: ${order.description}\nMaquina: ${order.maquina}\nCriticidade: ${order.priority}\nManutentor: ${order.manutentor}`);
-        qr.make();
-        qrCodeDiv.innerHTML = qr.createImgTag();
-
-        saveButton.remove();
-        saveToLocalStorage(); // Salva após a edição do card
+const filterButtons = document.querySelectorAll('#filterButtons button');
+filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const filter = button.id.replace('filter', '').toLowerCase();
+        filterCards(filter);
     });
-
-    card.appendChild(saveButton);
-};
-
-const getPriorityFromColor = (color) => {
-    switch (color) {
-        case 'rgb(52, 211, 153)':
-            return 'Baixo';
-        case 'rgb(96, 165, 250)':
-            return 'Médio';
-        case 'rgb(251, 191, 36)':
-            return 'Alto';
-        case 'rgb(217, 70, 239)':
-            return 'Crítico';
-        default:
-            return 'Desconhecido';
-    }
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadFromLocalStorage();
-    updateReportsAndStatistics();
 });
 
-document.addEventListener('dragover', dragOver);
-document.addEventListener('dragenter', dragEnter);
-document.addEventListener('dragleave', dragLeave);
-document.addEventListener('drop', drop);
+const filterCards = (priority) => {
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        if (priority === 'clear') {
+            card.style.display = 'block';
+        } else {
+            const cardPriority = card.querySelector('.circle').style.backgroundColor;
+            if (getCircleColor(priority) === cardPriority) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        }
+    });
+};
 
-const addOrderButton = document.getElementById('addOrderButton');
-const orderForm = document.getElementById('orderForm');
-const searchButton = document.getElementById('searchButton');
 const searchInput = document.getElementById('searchInput');
-const filterLow = document.getElementById('filterLow');
-const filterMedium = document.getElementById('filterMedium');
-const filterHigh = document.getElementById('filterHigh');
-const filterCritical = document.getElementById('filterCritical');
-const clearFilter = document.getElementById('clearFilter');
-
-addOrderButton.addEventListener('click', () => {
-    orderForm.classList.toggle('hidden');
-});
-
-orderForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const order = {
-        number: orderNumber,
-        tipo: orderTipo.options[orderTipo.selectedIndex].text,
-        description: orderDescription.value,
-        priority: orderPriority.value,
-        maquina: orderMaquina.options[orderMaquina.selectedIndex].text,
-        manutentor: orderManutentor.options[orderManutentor.selectedIndex].text
-    };
-    const newCard = createCard(order);
-    todoColumn.appendChild(newCard);
-    orderNumber++;
-    orderForm.reset();
-    orderForm.classList.add('hidden');
-    updateOrderCount();
-    saveToLocalStorage(); // Salva após adicionar nova ordem
-});
+const searchButton = document.getElementById('searchButton');
 
 searchButton.addEventListener('click', () => {
-    const searchTerm = searchInput.value.toLowerCase();
+    const query = searchInput.value.toLowerCase();
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {
         const description = card.querySelector('.card__description').textContent.toLowerCase();
-        if (description.includes(searchTerm)) {
-            card.style.display = '';
+        const manutentor = card.querySelector('.card__manutentor').textContent.toLowerCase();
+        const maquina = card.querySelector('.card__maquina').textContent.toLowerCase();
+        if (description.includes(query) || manutentor.includes(query) || maquina.includes(query)) {
+            card.style.display = 'block';
         } else {
             card.style.display = 'none';
         }
     });
 });
 
-const filterCardsByPriority = (priority) => {
+searchInput.addEventListener('input', () => {
+    if (searchInput.value === '') {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.style.display = 'block';
+        });
+    }
+});
+
+const orderTypeChartCtx = document.getElementById('orderTypeChart').getContext('2d');
+let orderTypeChart = new Chart(orderTypeChartCtx, {
+    type: 'pie',
+    data: {
+        labels: ['CO', 'CP', 'PR', 'PD'],
+        datasets: [{
+            label: 'Tipos de Ordem',
+            data: [0, 0, 0, 0],
+            backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56'],
+            hoverOffset: 4
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            tooltip: {
+                callbacks: {
+                    label: (context) => `${context.label}: ${context.raw} ordens`
+                }
+            }
+        }
+    }
+});
+
+const updateOrderTypeChart = () => {
+    const counts = { 'CO': 0, 'CP': 0, 'PR': 0, 'PD': 0 };
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {
-        const cardPriority = getPriorityFromColor(card.querySelector('.circle').style.backgroundColor);
-        if (cardPriority === priority) {
-            card.style.display = '';
-        } else {
-            card.style.display = 'none';
+        const tipo = card.querySelector('strong').textContent.split('- ')[1];
+        if (counts[tipo] !== undefined) {
+            counts[tipo]++;
         }
     });
+    orderTypeChart.data.datasets[0].data = [counts['CO'], counts['CP'], counts['PR'], counts['PD']];
+    orderTypeChart.update();
 };
 
-filterLow.addEventListener('click', () => filterCardsByPriority('Baixo'));
-filterMedium.addEventListener('click', () => filterCardsByPriority('Médio'));
-filterHigh.addEventListener('click', () => filterCardsByPriority('Alto'));
-filterCritical.addEventListener('click', () => filterCardsByPriority('Crítico'));
-clearFilter.addEventListener('click', () => {
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-        card.style.display = '';
-    });
-});
+updateOrderTypeChart();
