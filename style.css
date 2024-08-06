@@ -65,6 +65,8 @@ header > h1 {
     width: 30%;
     min-height: 70px;
     }
+ 
+    
 .card__delete, .card__edit {
     position: absolute;
     top: 10px;
