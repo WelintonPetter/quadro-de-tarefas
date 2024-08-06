@@ -61,6 +61,10 @@ header > h1 {
     position: relative;
 }
 
+.formulariOrdem{
+    width: 30%;
+    min-height: 70px;
+    }
 .card__delete, .card__edit {
     position: absolute;
     top: 10px;
@@ -205,7 +209,7 @@ form button[type="submit"]:hover {
 }
 
 #filterButtons button:hover {
-    background-color: #5a6268;
+    background-color: #0067b6;
 }
 
 button.active {
@@ -214,4 +218,7 @@ button.active {
 
 button.active:hover {
     background-color: #0056b3 !important;
+}
+.hidden {
+    display: none;
 }

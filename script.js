@@ -56,7 +56,7 @@ const createCard = (order) => {
     const circleColor = getCircleColor(order.priority);
 
     card.innerHTML = `
-        <div class="circle" style="background-color: ${circleColor};"></div>
+        <div class="circle" style="background-color: ${circleColor}; width: 20px; height: 20px; border-radius: 50%;"></div>
         <strong>Ordem #${order.number} - ${order.tipo}</strong><br>
         <div class="card__description" contenteditable>${order.description}</div><br>
         <div>Manutentor: <span class="card__manutentor" contenteditable>${order.manutentor}</span></div><br>
@@ -130,12 +130,15 @@ const addOrder = (order) => {
     updateOrderCount();
     saveToLocalStorage(); // Salva após a adição de nova ordem
     updateOrderTypeChart(); // Atualiza o gráfico após a adição de nova ordem
+    document.getElementById('orderForm').classList.add('hidden'); // Fecha o formulário após adicionar a ordem
 };
 
 document.getElementById('addOrderButton').addEventListener('click', () => {
-    document.getElementById('orderForm').classList.toggle('hidden');
+    const orderForm = document.getElementById('orderForm');
+    orderForm.classList.toggle('hidden');
 });
 
+// Ensure form closes after order is added
 document.getElementById('orderForm').addEventListener('submit', (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -149,7 +152,10 @@ document.getElementById('orderForm').addEventListener('submit', (event) => {
     };
     addOrder(order);
     event.target.reset();
-    document.getElementById('orderForm').classList.add('hidden');
+    const orderForm = document.getElementById('orderForm');
+    orderForm.classList.add('hidden');
+    const addOrderButton = document.getElementById('addOrderButton');
+    addOrderButton.classList.toggle('hidden');
 });
 
 const editCard = (card, order) => {
@@ -157,20 +163,32 @@ const editCard = (card, order) => {
     if (newDescription !== null) {
         card.querySelector('.card__description').textContent = newDescription;
         order.description = newDescription;
-        saveToLocalStorage();
     }
+
     const newManutentor = prompt('Edit Manutentor:', order.manutentor);
     if (newManutentor !== null) {
         card.querySelector('.card__manutentor').textContent = newManutentor;
         order.manutentor = newManutentor;
-        saveToLocalStorage();
     }
+
     const newMaquina = prompt('Edit Maquina:', order.maquina);
     if (newMaquina !== null) {
         card.querySelector('.card__maquina').textContent = newMaquina;
         order.maquina = newMaquina;
-        saveToLocalStorage();
     }
+
+    // Regenerate QR code
+    const qrCodeDiv = card.querySelector('.qrcode');
+    const qr = qrcode(0, 'H');
+    qr.addData(`Numero da Ordem: ${order.number}\nTipo: ${order.tipo}\nDescricao: ${order.description}\nMaquina: ${order.maquina}\nCriticidade: ${order.priority}\nManutentor: ${order.manutentor}`);
+    qr.make();
+    qrCodeDiv.innerHTML = qr.createImgTag();
+
+    // Update circle color
+    const circleColor = getCircleColor(order.priority);
+    card.querySelector('.circle').style.backgroundColor = circleColor;
+
+    saveToLocalStorage();
 };
 
 const saveToLocalStorage = () => {
@@ -194,6 +212,8 @@ const saveToLocalStorage = () => {
         });
     });
 
+    // Save the current orderNumber
+    localStorage.setItem('orderNumber', orderNumber);
     localStorage.setItem('orders', JSON.stringify(orders));
 };
 
@@ -207,6 +227,12 @@ const loadFromLocalStorage = () => {
             });
         });
         updateOrderCount();
+    }
+
+    // Load the orderNumber
+    const savedOrderNumber = localStorage.getItem('orderNumber');
+    if (savedOrderNumber) {
+        orderNumber = parseInt(savedOrderNumber, 10);
     }
 };
 
@@ -234,8 +260,12 @@ const filterCards = (priority) => {
         if (priority === 'clear') {
             card.style.display = 'block';
         } else {
-            const cardPriority = card.querySelector('.circle').style.backgroundColor;
-            if (getCircleColor(priority) === cardPriority) {
+            const cardCircle = card.querySelector('.circle');
+            const cardPriorityColor = cardCircle.style.backgroundColor;
+            const filterColor = getCircleColor(priority);
+
+            // Compare colors by converting them to lower case
+            if (cardPriorityColor === filterColor) {
                 card.style.display = 'block';
             } else {
                 card.style.display = 'none';
@@ -270,45 +300,3 @@ searchInput.addEventListener('input', () => {
         });
     }
 });
-
-const orderTypeChartCtx = document.getElementById('orderTypeChart').getContext('2d');
-let orderTypeChart = new Chart(orderTypeChartCtx, {
-    type: 'pie',
-    data: {
-        labels: ['CO', 'CP', 'PR', 'PD'],
-        datasets: [{
-            label: 'Tipos de Ordem',
-            data: [0, 0, 0, 0],
-            backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56'],
-            hoverOffset: 4
-        }]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'top',
-            },
-            tooltip: {
-                callbacks: {
-                    label: (context) => `${context.label}: ${context.raw} ordens`
-                }
-            }
-        }
-    }
-});
-
-const updateOrderTypeChart = () => {
-    const counts = { 'CO': 0, 'CP': 0, 'PR': 0, 'PD': 0 };
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-        const tipo = card.querySelector('strong').textContent.split('- ')[1];
-        if (counts[tipo] !== undefined) {
-            counts[tipo]++;
-        }
-    });
-    orderTypeChart.data.datasets[0].data = [counts['CO'], counts['CP'], counts['PR'], counts['PD']];
-    orderTypeChart.update();
-};
-
-updateOrderTypeChart();
