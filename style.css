@@ -19,13 +19,13 @@ header > h1 {
     margin-top: 5px;
 }
 
-.columns {
+.colunas {
     display: flex;
     gap: 15px;
     margin-top: 50px;
 }
 
-.column {
+.coluna {
     width: 100%;
     background-color: #f4f5f7;
     height: 100dvh;
@@ -61,12 +61,33 @@ header > h1 {
     position: relative;
 }
 
-.formulariOrdem{
-    width: 30%;
+.formulariOrdem {
+    width: 40%;
     min-height: 70px;
-    }
- 
-    
+}
+
+.button-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+#addOrderButton, #graphicButton, #userButton {
+    flex: 1;
+    background-color: #28a745;
+    color: #ffffff;
+    border: none;
+    padding: 12px ;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#addOrderButton:hover, #graphicButton:hover {
+    background-color: #218838;
+}
+
 .card__delete, .card__edit {
     position: absolute;
     top: 10px;
@@ -98,34 +119,35 @@ header > h1 {
 }
 
 form {
+    width: 80%;
     display: flex;
     flex-direction: column;
     gap: 10px;
     margin-bottom: 20px;
     background-color: #ffffff;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
 }
 
 form label {
     font-size: 1rem;
-    color: #495057; /* Cor do texto dos labels */
-    margin-bottom: 8px; /* Espaço abaixo dos labels */
+    color: #495057;
+    margin-bottom: 8px;
 }
 
 form input, form textarea, form select {
     font-size: 0.95rem;
-    padding: 12px; /* Aumento do espaçamento interno */
-    border: 1px solid #ced4da; /* Cor da borda dos campos */
+    padding: 12px;
+    border: 1px solid #ced4da;
     border-radius: 5px;
-    background-color: #f8f9fa; /* Cor de fundo dos campos */
-    transition: border-color 0.3s ease; /* Transição suave na cor da borda */
+    background-color: #f8f9fa;
+    transition: border-color 0.3s ease;
 }
 
 form input:focus, form textarea:focus, form select:focus {
-    outline: none; /* Remove o contorno ao focar */
-    border-color: #80bdff; /* Cor da borda ao focar */
+    outline: none;
+    border-color: #80bdff;
 }
 
 form button[type="submit"] {
@@ -143,28 +165,8 @@ form button[type="submit"]:hover {
     background-color: #0056b3;
 }
 
-#addOrderButton {
-    width: 100%; /* Botão de largura total */
-    background-color: #28a745;
-    color: #ffffff;
-    border: none;
-    padding: 12px;
-    font-size: 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 10px; /* Espaçamento superior */
-}
-
-#addOrderButton:hover {
-    background-color: #218838; /* Cor de fundo mais escura ao passar o mouse */
-}
-
-.card[contenteditable="true"] {
-    box-shadow: 0 0 0 2px #4caf50;
-}
-
 #searchFilter {
+    width: 80%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -173,7 +175,7 @@ form button[type="submit"]:hover {
 }
 
 #searchFilter input[type="text"] {
-    width: 80%;
+    width: 90%;
     padding: 12px;
     border: 1px solid #ced4da;
     border-radius: 5px;
@@ -220,7 +222,4 @@ button.active {
 
 button.active:hover {
     background-color: #0056b3 !important;
-}
-.hidden {
-    display: none;
 }
