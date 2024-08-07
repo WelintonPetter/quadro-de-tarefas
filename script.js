@@ -300,3 +300,73 @@ searchInput.addEventListener('input', () => {
         });
     }
 });
+
+// Get modal elements
+const chartModal = document.getElementById('chartModal');
+const closeModal = document.querySelector('.close');
+
+// Function to open the chart modal and generate chart
+const openChartModal = () => {
+    chartModal.classList.remove('hidden');
+    chartModal.style.display = 'flex';
+    generateOrderTypeChart();
+};
+
+// Function to close the chart modal
+const closeChartModal = () => {
+    chartModal.classList.add('hidden');
+    chartModal.style.display = 'none';
+};
+
+// Add event listener to the "Gráficos" button
+document.getElementById('graphicButton').addEventListener('click', openChartModal);
+
+// Add event listener to the close button in the modal
+closeModal.addEventListener('click', closeChartModal);
+
+// Function to generate the order type chart
+const generateOrderTypeChart = () => {
+    const ctx = document.getElementById('orderTypeChart').getContext('2d');
+    const orders = JSON.parse(localStorage.getItem('orders'));
+    const orderTypes = { 'Corretiva': 0, 'CorretivaProgramada': 0, 'Preventiva': 0, 'Preditiva': 0 };
+
+    if (orders) {
+        Object.keys(orders).forEach(columnId => {
+            orders[columnId].forEach(order => {
+                orderTypes[order.tipo]++;
+            });
+        });
+    }
+
+    const data = {
+        labels: Object.keys(orderTypes),
+        datasets: [{
+            label: 'Tipos de Ordem',
+            data: Object.values(orderTypes),
+            backgroundColor: ['#34d399', '#60a5fa', '#fbbf24', '#d946ef'],
+            borderColor: ['#34d399', '#60a5fa', '#fbbf24', '#d946ef'],
+            borderWidth: 1
+        }]
+    };
+
+    const config = {
+        type: 'bar',
+        data: data,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    };
+
+    new Chart(ctx, config);
+};
+
+// Close the modal if clicked outside the modal content
+window.addEventListener('click', (event) => {
+    if (event.target === chartModal) {
+        closeChartModal();
+    }
+});
