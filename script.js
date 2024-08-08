@@ -325,24 +325,124 @@ document.getElementById('graphicButton').addEventListener('click', openChartModa
 closeModal.addEventListener('click', closeChartModal);
 
 // Function to generate the order type chart
+
+
+// Close the modal if clicked outside the modal content
+window.addEventListener('click', (event) => {
+    if (event.target === chartModal) {
+        closeChartModal();
+    }
+});
+
+const chartTypeSelector = document.getElementById('chartTypeSelector');
+const dataTypeSelector = document.getElementById('dataTypeSelector');
+let currentChart;
+
+const getPriorityLabel = (color) => {
+    switch (color) {
+        case '#34d399':
+            return 'Baixo';
+        case '#60a5fa':
+            return 'Médio';
+        case '#fbbf24':
+            return 'Alto';
+        case '#d946ef':
+            return 'Crítico';
+        default:
+            return 'Desconhecido';
+    }
+};
+
 const generateOrderTypeChart = () => {
     const ctx = document.getElementById('orderTypeChart').getContext('2d');
     const orders = JSON.parse(localStorage.getItem('orders'));
-    const orderTypes = { 'Corretiva': 0, 'CorretivaProgramada': 0, 'Preventiva': 0, 'Preditiva': 0 };
+    let data;
+    let labels;
 
-    if (orders) {
-        Object.keys(orders).forEach(columnId => {
-            orders[columnId].forEach(order => {
-                orderTypes[order.tipo]++;
-            });
-        });
+    switch (dataTypeSelector.value) {
+        
+        case 'orderPriority':
+            const orderPriorities = { 'Baixo': 0, 'Médio': 0, 'Alto': 0, 'Crítico': 0 };
+            if (orders) {
+                Object.keys(orders).forEach(columnId => {
+                    orders[columnId].forEach(order => {
+                        const priorityLabel = getPriorityLabel(order.priority);
+                        if (orderPriorities[priorityLabel] !== undefined) {
+                            orderPriorities[priorityLabel]++;
+                        }
+                    });
+                });
+            }
+            labels = Object.keys(orderPriorities);
+            data = Object.values(orderPriorities);
+            break;
+
+            
+           
+
+    
+
+            case 'orderManutentor':
+                const manutentors = {};
+                if (orders) {
+                    Object.keys(orders).forEach(columnId => {
+                        orders[columnId].forEach(order => {
+                            if (manutentors[order.manutentor]) {
+                                manutentors[order.manutentor]++;
+                            } else {
+                                manutentors[order.manutentor] = 1;
+                            }
+                        });
+                    });
+                }
+                labels = Object.keys(manutentors);
+                data = Object.values(manutentors);
+                break;
+            
+
+        case 'orderStage':
+            const orderStages = { 'Para Fazer': 0, 'Em Andamento': 0, 'Para Rever': 0, 'Finalizado': 0 };
+            if (orders) {
+                Object.keys(orders).forEach(columnId => {
+                    switch (columnId) {
+                        case 'todoColumn':
+                            orderStages['Para Fazer'] += orders[columnId].length;
+                            break;
+                        case 'inProgressColumn':
+                            orderStages['Em Andamento'] += orders[columnId].length;
+                            break;
+                        case 'reviewColumn':
+                            orderStages['Para Rever'] += orders[columnId].length;
+                            break;
+                        case 'doneColumn':
+                            orderStages['Finalizado'] += orders[columnId].length;
+                            break;
+                    }
+                });
+            }
+            labels = Object.keys(orderStages);
+            data = Object.values(orderStages);
+            break;
+
+        default:
+            const orderTypes = { 'Corretiva': 0, 'CorretivaProgramada': 0, 'Preventiva': 0, 'Preditiva': 0 };
+            if (orders) {
+                Object.keys(orders).forEach(columnId => {
+                    orders[columnId].forEach(order => {
+                        orderTypes[order.tipo]++;
+                    });
+                });
+            }
+            labels = Object.keys(orderTypes);
+            data = Object.values(orderTypes);
+            break;
     }
 
-    const data = {
-        labels: Object.keys(orderTypes),
+    const chartData = {
+        labels: labels,
         datasets: [{
-            label: 'Tipos de Ordem',
-            data: Object.values(orderTypes),
+            label: dataTypeSelector.options[dataTypeSelector.selectedIndex].text,
+            data: data,
             backgroundColor: ['#34d399', '#60a5fa', '#fbbf24', '#d946ef'],
             borderColor: ['#34d399', '#60a5fa', '#fbbf24', '#d946ef'],
             borderWidth: 1
@@ -350,8 +450,8 @@ const generateOrderTypeChart = () => {
     };
 
     const config = {
-        type: 'bar',
-        data: data,
+        type: chartTypeSelector.value,
+        data: chartData,
         options: {
             scales: {
                 y: {
@@ -361,12 +461,28 @@ const generateOrderTypeChart = () => {
         }
     };
 
-    new Chart(ctx, config);
+    if (currentChart) {
+        currentChart.destroy();
+    }
+    currentChart = new Chart(ctx, config);
 };
 
-// Close the modal if clicked outside the modal content
+
+
+
+chartTypeSelector.addEventListener('change', generateOrderTypeChart);
+dataTypeSelector.addEventListener('change', generateOrderTypeChart);
+
+
+
+document.getElementById('graphicButton').addEventListener('click', openChartModal);
+closeModal.addEventListener('click', closeChartModal);
+
 window.addEventListener('click', (event) => {
     if (event.target === chartModal) {
         closeChartModal();
     }
 });
+
+
+

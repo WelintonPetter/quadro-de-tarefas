@@ -12,7 +12,6 @@ main {
     user-select: none;
 }
 
-
 .colunas {
     display: flex;
     gap: 15px;
@@ -71,14 +70,14 @@ main {
     background-color: #28a745;
     color: #ffffff;
     border: none;
-    padding: 12px ;
+    padding: 12px;
     font-size: 1rem;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-#addOrderButton:hover, #graphicButton:hover {
+#addOrderButton:hover, #graphicButton:hover, #userButton:hover {
     background-color: #218838;
 }
 
@@ -223,7 +222,6 @@ button.active:hover {
     padding: 30px;
     margin-top: 0px;
     margin-bottom: 30px;
-
 }
 
 /* Modal Styles */
@@ -242,6 +240,7 @@ button.active:hover {
 }
 
 .modal-content {
+    
     background-color: #fefefe;
     margin: auto;
     padding: 20px;
@@ -265,4 +264,18 @@ button.active:hover {
     cursor: pointer;
 }
 
+.modal-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    
+}
 
+.chart-selector {
+    
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    font-size: 1rem;
+}

@@ -23,14 +23,31 @@
             <button id="addOrderButton">Adicionar Ordem</button>
             <button id="graphicButton">Gráficos</button>
             <button id="userButton">Meus dados</button>
-            
         </div>
+        
         <div id="chartModal" class="modal hidden">
             <div class="modal-content">
                 <span class="close">&times;</span>
+                <div class="modal-controls">
+                    <select id="chartTypeSelector" class="chart-selector">
+                        <option value="bar">Barra</option>
+                        <option value="pie">Pizza</option>
+                        <option value="line">Linha</option>
+                        <option value="doughnut">Rosca</option>
+                    </select>
+                    <select id="dataTypeSelector" class="chart-selector">
+                        <option value="orderType">Tipos de Ordem</option>
+                        <option value="orderPriority">Criticidade da Ordem</option>
+                        <option value="orderManutentor">Manutentor</option>
+                        <option value="orderStage">Estágio das Ordens</option>
+                    </select>
+                </div>
                 <canvas id="orderTypeChart"></canvas>
             </div>
         </div>
+        
+        
+        
 
         <div class="formulariOrdem">
             <form id="orderForm" class="hidden">
