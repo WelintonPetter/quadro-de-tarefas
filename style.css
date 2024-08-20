@@ -19,8 +19,9 @@ main {
 }
 
 .coluna {
+    
     width: 100%;
-    background-color: #f4f5f7;
+    background-color: #f4f5f7e7 ;
     height: 100dvh;
     border-radius: 8px;
     padding: 10px;
@@ -42,7 +43,7 @@ main {
 .card {
     width: 100%;
     min-height: 70px;
-    background-color: #fff;
+    background-color: #ffffff;
     border-radius: 5px;
     border: 1px solid #dfe1e6;
     box-shadow: 0 2px 2px #dfe1e6;
@@ -53,6 +54,7 @@ main {
     margin-bottom: 5px;
     position: relative;
 }
+
 
 .formulariOrdem {
     width: 40%;
@@ -67,7 +69,7 @@ main {
 
 #addOrderButton, #graphicButton, #userButton {
     flex: 1;
-    background-color: #28a745;
+    background-color: #28a746c0;
     color: #ffffff;
     border: none;
     padding: 12px;
@@ -75,6 +77,7 @@ main {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    
 }
 
 #addOrderButton:hover, #graphicButton:hover, #userButton:hover {
@@ -134,7 +137,8 @@ form input, form textarea, form select {
     padding: 12px;
     border: 1px solid #ced4da;
     border-radius: 5px;
-    background-color: #f8f9fa;
+    background-color: #f8f9fab0;
+    
     transition: border-color 0.3s ease;
 }
 
@@ -145,20 +149,23 @@ form input:focus, form textarea:focus, form select:focus {
 
 form button[type="submit"] {
     background-color: #007bff;
-    color: #ffffff;
     border: none;
     padding: 12px 20px;
     font-size: 1rem;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    
 }
 
 form button[type="submit"]:hover {
     background-color: #0056b3;
+    
 }
 
+
 #searchFilter {
+
     width: 80%;
     display: flex;
     justify-content: space-between;
@@ -168,6 +175,7 @@ form button[type="submit"]:hover {
 }
 
 #searchFilter input[type="text"] {
+    
     width: 90%;
     padding: 12px;
     border: 1px solid #ced4da;
@@ -186,6 +194,7 @@ form button[type="submit"]:hover {
 #searchFilter button:hover {
     background-color: #0056b3;
 }
+
 
 #filterButtons {
     display: flex;
@@ -215,6 +224,10 @@ button.active {
 
 button.active:hover {
     background-color: #0056b3 !important;
+}
+.container {
+    background-image: url('https://automatize.eng.br/wp-content/uploads/2023/05/Projeto-para-automacao-industrial.jpg');
+    background-size: cover;
 }
 
 .container-top {

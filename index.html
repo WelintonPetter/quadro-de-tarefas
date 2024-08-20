@@ -7,116 +7,118 @@
     <title>ACOMPANHAR ANDAMENTO</title>
 </head>
 <body>
-    <header>
-        <div class="container-top">
+    <div class="container">
+        <header>
+            <div class="container-top">
+                
+            </div>
+        </header>
+        <main>
             
-        </div>
-    </header>
-<main>
-    
-    
+            
 
-    
-    <div class="homeOrdem">
+            
+            <div class="homeOrdem">
 
-        <div class="button-container">
-            <button id="addOrderButton">Adicionar Ordem</button>
-            <button id="graphicButton">Gráficos</button>
-            <button id="userButton">Meus dados</button>
-        </div>
-        
-        <div id="chartModal" class="modal hidden">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <div class="modal-controls">
-                    <select id="chartTypeSelector" class="chart-selector">
-                        <option value="bar">Barra</option>
-                        <option value="pie">Pizza</option>
-                        <option value="line">Linha</option>
-                        <option value="doughnut">Rosca</option>
-                    </select>
-                    <select id="dataTypeSelector" class="chart-selector">
-                        <option value="orderType">Tipos de Ordem</option>
-                        <option value="orderPriority">Criticidade da Ordem</option>
-                        <option value="orderManutentor">Manutentor</option>
-                        <option value="orderStage">Estágio das Ordens</option>
-                    </select>
+                <div class="button-container">
+                    <button id="addOrderButton">Adicionar Ordem</button>
+                    <button id="graphicButton">Gráficos</button>
+                    <button id="userButton">Meus dados</button>
                 </div>
-                <canvas id="orderTypeChart"></canvas>
-            </div>
-        </div>
-        
-        
-        
+                
+                <div id="chartModal" class="modal hidden">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <div class="modal-controls">
+                            <select id="chartTypeSelector" class="chart-selector">
+                                <option value="bar">Barra</option>
+                                <option value="pie">Pizza</option>
+                                <option value="line">Linha</option>
+                                <option value="doughnut">Rosca</option>
+                            </select>
+                            <select id="dataTypeSelector" class="chart-selector">
+                                <option value="orderType">Tipos de Ordem</option>
+                                <option value="orderPriority">Criticidade da Ordem</option>
+                                <option value="orderManutentor">Manutentor</option>
+                                <option value="orderStage">Estágio das Ordens</option>
+                            </select>
+                        </div>
+                        <canvas id="orderTypeChart"></canvas>
+                    </div>
+                </div>
+                
+                
+                
 
-        <div class="formulariOrdem">
-            <form id="orderForm" class="hidden">
-                <label for="orderTipo">Tipo De Ordem</label>
-                <select id="orderTipo" name="orderTipo" required>
-                    <option value="Corretiva">CO</option>
-                    <option value="CorretivaProgramada">CP</option>
-                    <option value="Preventiva">PR</option>
-                    <option value="Preditiva">PD</option>
-                </select>
-                <label for="orderDescription">Descrição da Ordem</label>
-                <textarea id="orderDescription" name="orderDescription" required></textarea>
-                <label for="orderMaquina">Maquina</label>
-                <select id="orderMaquina" name="orderMaquina" required>
-                    <option value="Maquina1">01</option>
-                    <option value="Maquina2">02</option>
-                    <option value="Maquina3">03</option>
-                    <option value="Maquina4">04</option>
-                </select>
-                <label for="orderPriority">Criticidade</label>
-                <select id="orderPriority" name="orderPriority" required>
-                    <option value="Baixo">Baixo</option>
-                    <option value="Médio">Médio</option>
-                    <option value="Alto">Alto</option>
-                    <option value="Crítico">Crítico</option>
-                </select>
-                <label for="orderManutentor">Manutentor</label>
-                <select id="orderManutentor" name="orderManutentor" required>
-                    <option value="Manutentor1">Welinton</option>
-                    <option value="Manutentor2">Welinton2</option>
-                    <option value="Manutentor3">Welinton3</option>
-                    <option value="Manutentor4">Welinton4</option>
-                </select>
-                <button type="submit">Criar Ordem</button>
-            </form>
-            <div id="searchFilter">
-                <input type="text" id="searchInput" placeholder="Pesquisar...">
-                <button id="searchButton">Buscar</button>
+                <div class="formulariOrdem">
+                    <form id="orderForm" class="hidden">
+                        <label for="orderTipo">Tipo De Ordem</label>
+                        <select id="orderTipo" name="orderTipo" required>
+                            <option value="Corretiva">CO</option>
+                            <option value="CorretivaProgramada">CP</option>
+                            <option value="Preventiva">PR</option>
+                            <option value="Preditiva">PD</option>
+                        </select>
+                        <label for="orderDescription">Descrição da Ordem</label>
+                        <textarea id="orderDescription" name="orderDescription" required></textarea>
+                        <label for="orderMaquina">Maquina</label>
+                        <select id="orderMaquina" name="orderMaquina" required>
+                            <option value="Maquina1">01</option>
+                            <option value="Maquina2">02</option>
+                            <option value="Maquina3">03</option>
+                            <option value="Maquina4">04</option>
+                        </select>
+                        <label for="orderPriority">Criticidade</label>
+                        <select id="orderPriority" name="orderPriority" required>
+                            <option value="Baixo">Baixo</option>
+                            <option value="Médio">Médio</option>
+                            <option value="Alto">Alto</option>
+                            <option value="Crítico">Crítico</option>
+                        </select>
+                        <label for="orderManutentor">Manutentor</label>
+                        <select id="orderManutentor" name="orderManutentor" required>
+                            <option value="Manutentor1">Welinton</option>
+                            <option value="Manutentor2">Welinton2</option>
+                            <option value="Manutentor3">Welinton3</option>
+                            <option value="Manutentor4">Welinton4</option>
+                        </select>
+                        <button type="submit">Criar Ordem</button>
+                    </form>
+                    <div id="searchFilter">
+                        <input type="text" id="searchInput" placeholder="Pesquisar...">
+                        <button id="searchButton">Buscar</button>
+                    </div>
+                    <div id="filterButtons">
+                        <button id="filterLow">Baixo</button>
+                        <button id="filterMedium">Médio</button>
+                        <button id="filterHigh">Alto</button>
+                        <button id="filterCritical">Crítico</button>
+                        <button id="clearFilter">Limpar Filtro</button>
+                    </div>
+                </div>
             </div>
-            <div id="filterButtons">
-                <button id="filterLow">Baixo</button>
-                <button id="filterMedium">Médio</button>
-                <button id="filterHigh">Alto</button>
-                <button id="filterCritical">Crítico</button>
-                <button id="clearFilter">Limpar Filtro</button>
-            </div>
-        </div>
+
+            <section class="colunas">
+                <section class="coluna">
+                    <h2 class="column__title" data-title="PARA FAZER">PARA FAZER (0)</h2>
+                    <section class="column__cards" id="todoColumn"></section>
+                </section>
+                <section class="coluna">
+                    <h2 class="column__title" data-title="EM ANDAMENTO">EM ANDAMENTO (0)</h2>
+                    <section class="column__cards" id="inProgressColumn"></section>
+                </section>
+                <section class="coluna">
+                    <h2 class="column__title" data-title="PARA REVER">PARA REVER (0)</h2>
+                    <section class="column__cards" id="reviewColumn"></section>
+                </section>
+                <section class="coluna">
+                    <h2 class="column__title" data-title="FINALIZADO">FINALIZADO (0)</h2>
+                    <section class="column__cards" id="doneColumn"></section>
+                </section>
+            </section>
+                
+        </main>
     </div>
-
-    <section class="colunas">
-        <section class="coluna">
-            <h2 class="column__title" data-title="PARA FAZER">PARA FAZER (0)</h2>
-            <section class="column__cards" id="todoColumn"></section>
-        </section>
-        <section class="coluna">
-            <h2 class="column__title" data-title="EM ANDAMENTO">EM ANDAMENTO (0)</h2>
-            <section class="column__cards" id="inProgressColumn"></section>
-        </section>
-        <section class="coluna">
-            <h2 class="column__title" data-title="PARA REVER">PARA REVER (0)</h2>
-            <section class="column__cards" id="reviewColumn"></section>
-        </section>
-        <section class="coluna">
-            <h2 class="column__title" data-title="FINALIZADO">FINALIZADO (0)</h2>
-            <section class="column__cards" id="doneColumn"></section>
-        </section>
-    </section>
-        
-</main>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator/qrcode.js"></script>
 <script src="script.js"></script>

@@ -55,6 +55,13 @@ const createCard = (order) => {
     card.draggable = true;
     const circleColor = getCircleColor(order.priority);
 
+    // Define a cor de fundo do card com base na prioridade
+    if (order.priority === 'Crítico') {
+        card.style.backgroundColor = '#ff4d506b'; // Vermelho para criticidade crítica
+    } else {
+        card.style.backgroundColor = '#fff'; // Branco para outras prioridades
+    }
+
     card.innerHTML = `
         <div class="circle" style="background-color: ${circleColor}; width: 20px; height: 20px; border-radius: 50%;"></div>
         <strong>Ordem #${order.number} - ${order.tipo}</strong><br>
@@ -106,11 +113,20 @@ const getCircleColor = (priority) => {
     }
 };
 
+
 const updateCardBackground = (card, column) => {
-    const columnId = column.id;
+    const columnId = column.id; // Obtém o ID da coluna
+
+    // Verifica se a coluna é a 'doneColumn' (coluna de concluídos)
     if (columnId === 'doneColumn') {
-        card.style.backgroundColor = '#d4edda';
-    } else {
+        card.style.backgroundColor = '#d4edda'; // Define a cor de fundo verde claro para cartões concluídos
+    } 
+    // Verifica se a coluna é a 'reviewColumn' (coluna de revisão)
+    else if (columnId === 'reviewColumn') {
+        card.style.backgroundColor = '#fcf8099c'; // Define a cor de fundo para cartões em revisão
+    } 
+    // Caso contrário, define o fundo branco
+    else {
         card.style.backgroundColor = '#fff';
     }
 };
